@@ -1,3 +1,5 @@
+""""Módulo do agente de IA que fará a análise dos logs obtidos"""
+
 import os
 from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
@@ -57,6 +59,7 @@ chain = prompt_template | chat
 
 
 def analyze_logs(logs: list[str]) -> str:
+    """Função para que o agente receba e analise os logs"""
     combined_logs = "\n".join(logs)
     response = chain.invoke({"logs": combined_logs})
     return response.content

