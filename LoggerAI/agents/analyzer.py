@@ -30,7 +30,7 @@ Sua tarefa é analisar os logs fornecidos com atenção aos seguintes pontos:
 
 ### Exemplo de saída esperada:
 
-## Logs Brutos:
+## Logs BRUTOS:
                                                    
 - Aqui ficam todos os logs do arquivo de maneira bruta, ou seja, sem formatação, da maneira recbida.
 

