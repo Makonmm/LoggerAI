@@ -1,9 +1,9 @@
 # Logger AI
 
-### O Logger AI é uma ferramenta que desenvolvi com Python para pesquisa e aprendizado em **offsec**, focada no estudo de técnicas utilizadas por malwares, como keyloggers e RATs. Ela simula comportamentos maliciosos e utiliza um agente inteligente para análise e formatação dos dados que foram coletados.
+### O Logger AI é uma ferramenta que desenvolvi com Python para pesquisa e aprendizado em **offsec**, focada no estudo de técnicas utilizadas por malwares, como keyloggers e RATs. Ela simula comportamentos maliciosos e utiliza agentes inteligentes para análise e formatação dos dados que foram coletados.
 
 ### ⚠️ **Aviso**  ⚠️
---- Este projeto é educacional. Não utilize em ambientes não autorizados. Use com responsabilidade. ---
+-------------> Este projeto é educacional. Não utilize em ambientes não autorizados. Use com responsabilidade.<-------------
 
 ---
 
