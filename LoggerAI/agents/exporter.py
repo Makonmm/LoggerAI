@@ -1,4 +1,4 @@
-"""Agente para analisar os logs e exportá-los para PDF"""
+"""Agente que recebe os logs analisados do agente "analyzer" e cria um relatório em PDF com eles"""
 
 import os
 import re
@@ -15,7 +15,11 @@ from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 
-load_dotenv()
+from LoggerAI.loadenvfunc import get_base_path
+
+dotenv_path = os.path.join(get_base_path(), ".env")
+load_dotenv(dotenv_path)
+
 api_key = os.getenv("GROQ_API_KEY")
 
 os.environ["GROQ_API_KEY"] = api_key
